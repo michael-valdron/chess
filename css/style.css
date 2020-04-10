@@ -1,0 +1,45 @@
+
+#gameboard {
+    width: 610px;
+    height: 610px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chessboard {
+    width: 100%;
+    height: 100%;
+    margin: 20px;
+    border: 25px solid;
+    border-image: url(/img/wood.jpg) 50 round;
+}
+
+.square {
+    float: left;
+    width: 70px;
+    height: 70px;
+    font-size: 50px;
+    border: 1px solid;
+    border-radius: 0.1px;
+    text-align:center;
+    display: table-cell;
+    vertical-align:middle;
+}
+
+.square:hover {
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+}
+
+.dark {
+    background-color: #bf8040;
+}
+
+.light {
+    background-color: #f9f2ec;
+}
+
+@media only screen and (max-width: 610px) {
+    #gameboard {width: 510px; height: 510px;}
+}
