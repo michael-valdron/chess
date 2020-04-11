@@ -1,8 +1,11 @@
-function initForm() {
-    ReactDOM.render(<MainForm />, $('#gameform').get(0));
-}
-
 class MainForm extends React.Component {
+    static init(id) {
+        if (id)
+            ReactDOM.render(<MainForm />, $(id).get(0));
+        else
+            console.error("ERROR: No \'id\' passed to \'MainForm.init\'.");
+    }
+
     constructor() {
         super();
         this.colClass = "col-sm-3";
@@ -20,7 +23,7 @@ class MainForm extends React.Component {
                     "#dialog-box",
                     "New Game",
                     "Start a new game?",
-                    initBoard,
+                    () => Board.init("#gameboard"),
                     DialogButtons.YesNo
                 ),
                 dataToggle: "modal",

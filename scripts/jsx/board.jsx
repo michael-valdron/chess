@@ -132,16 +132,19 @@ const STANDARD_SETUP = {
     }
 };
 
-function initBoard() {
-    let id = '#gameboard';
-    ReactDOM.unmountComponentAtNode($(id).get(0));
-    ReactDOM.render(<Board />, $(id).get(0));
-}
-
 class Board extends React.Component {
+    static init(id) {
+        if (id) {
+            ReactDOM.unmountComponentAtNode($(id).get(0));
+            ReactDOM.render(<Board />, $(id).get(0));
+        } else {
+            console.error("ERROR: No \'id\' passed to \'Board.init\'.");
+        }
+    }
+
     constructor(props) {
         super(props);
-        this.init = true;
+        this.fresh = true;
         this.state = {
             player: (props.player) ? props.player : Color.LIGHT,
             pieces: props.pieces,
@@ -218,10 +221,10 @@ class Board extends React.Component {
     }
 
     render() {
-        if (this.init) {
+        if (this.fresh) {
             this.initPieces();
             this.build();
-            this.init = false;
+            this.fresh = false;
         }
         
         return Object.keys(this.state.squares)
