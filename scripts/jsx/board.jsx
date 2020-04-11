@@ -132,6 +132,12 @@ const STANDARD_SETUP = {
     }
 };
 
+function initBoard() {
+    let id = '#gameboard';
+    ReactDOM.unmountComponentAtNode($(id).get(0));
+    ReactDOM.render(<Board />, $(id).get(0));
+}
+
 class Board extends React.Component {
     constructor(props) {
         super(props);
