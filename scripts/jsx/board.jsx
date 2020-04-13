@@ -148,14 +148,20 @@ class Board extends React.Component {
         this.state = {
             player: (props.player) ? props.player : Color.LIGHT,
             pieces: props.pieces,
+            takenPieces: {},
             squares: {},
-            onMove: null
+            endGame: false,
+            selElement: null
         };
     }
 
     initPieces() {
-        if (!this.state.pieces) {
+        if (isEmpty(this.state.pieces)) {
             this.state.pieces = STANDARD_SETUP;
+        }
+        if (isEmpty(this.state.takenPieces)) {
+            this.state.takenPieces[Color.LIGHT] = [];
+            this.state.takenPieces[Color.DARK] = [];
         }
     }
 
@@ -197,26 +203,44 @@ class Board extends React.Component {
         let squares = clone(this.state.squares);
         let pieces = clone(this.state.pieces);
 
-        pieces[destElement.id] = pieces[this.state.onMove.id];
-        delete pieces[this.state.onMove.id];
+        pieces[destElement.id] = pieces[this.state.selElement.id];
+        delete pieces[this.state.selElement.id];
 
         squares[destElement.id] = this.createSquare(destElement.id, getColor(destElement), pieces[destElement.id]);
-        squares[this.state.onMove.id] = this.createSquare(this.state.onMove.id, getColor(this.state.onMove));
+        squares[this.state.selElement.id] = this.createSquare(this.state.selElement.id, getColor(this.state.selElement));
         
         this.setState({squares: squares});
         this.setState({pieces: pieces});
-        this.setState({onMove: null});
+        this.setState({selElement: null});
         this.endTurn();
     }
 
-    onClick(e) {
-        let element = e.target;
-        let pieceData = Piece.getData(element.innerHTML);
+    attack(victimElement) {
+        let pieces = clone(this.state.pieces);
+        let takenPieces = clone(this.state.takenPieces);
+        
+        takenPieces[this.state.player].push(pieces[victimElement.id]);
+        delete pieces[victimElement.id];
 
-        if (!this.state.onMove && pieceData && pieceData.color === this.state.player) {
-            this.setState({onMove: element});
-        } else if (this.state.onMove) {
-            this.move(element);
+        this.setState({takenPieces: takenPieces});
+        this.setState({pieces: pieces});
+    }
+
+    onClick(e) {
+        if (!this.state.endGame) {
+            let element = e.target;
+            let pieceData = Piece.getData(element.innerHTML);
+
+            if (!this.state.selElement && pieceData && pieceData.color === this.state.player) {
+                this.setState({selElement: element});
+            } else if (this.state.selElement && element.id === this.state.selElement.id) {
+                this.setState({selElement: null});
+            } else if (this.state.selElement) {
+                if (pieceData) {
+                    this.attack(element);
+                }
+                this.move(element);
+            }
         }
     }
 
